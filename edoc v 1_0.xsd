@@ -1,0 +1,748 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified"
+    vc:minVersion="1.1" xmlns:business="http://www.w3.org/ns/corevocabulary/business"
+    xmlns:location="http://www.w3.org/ns/corevocabulary/location"
+    xmlns:person="http://www.w3.org/ns/corevocabulary/person">
+    <xs:import namespace="http://www.w3.org/ns/corevocabulary/location"
+        schemaLocation="lib/corevoc/CoreLocation-v1.00.xsd"/>
+    <xs:import namespace="http://www.w3.org/ns/corevocabulary/person"
+        schemaLocation="lib/corevoc/CorePerson-v1.00.xsd"/>
+    <xs:import namespace="http://www.w3.org/ns/corevocabulary/business"
+        schemaLocation="lib/corevoc/CoreBusiness-v1.00.xsd"/>
+    <xs:complexType name="UkrOrganizationType">
+        <xs:complexContent>
+            <xs:extension base="business:CvbusinessType">
+                <xs:attribute name="departmentName" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="UkrPersonalDataType">
+        <xs:complexContent>
+            <xs:extension base="person:CvpersonType">
+                <xs:sequence>
+                    <xs:element name="Rank" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>Вчений ступінь, військове звання, духовне ім'я і тому подібне. Дозволяється послідовне зазначення чере кому декількох звань або титулів</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:attribute name="privilege" type="xs:string" use="optional">
+                                <xs:annotation>
+                                    <xs:documentation>Пільгова категорія</xs:documentation>
+                                </xs:annotation>
+                            </xs:attribute>
+                            <xs:attribute name="socialposition" type="xs:string" use="optional">
+                                <xs:annotation>
+                                    <xs:documentation>Соціальний стан</xs:documentation>
+                                </xs:annotation>
+                            </xs:attribute>
+                            <xs:attribute name="sex" use="optional">
+                                <xs:annotation>
+                                    <xs:documentation>Стать: 0 - невідома; 1 - жіноча; 2 - чоловіча</xs:documentation>
+                                </xs:annotation>
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:int">
+                                        <xs:minInclusive value="0"/>
+                                        <xs:maxInclusive value="2"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Econtact" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>Номери (адреси) наявних засобів електрозв'язку. Допускається послідовне перерахування через кому декількох номерів (адрес)</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:attribute name="type" use="required">
+                                <xs:annotation>
+                                    <xs:documentation>Тип номера (адреси): 0 - робочий телефон (адреси); 1 - домашній телефон; 2 - мобільний телефон; 3 - факс; 4 - адреса електронної пошти (email); 5 - адреса web-сайта (сторінки); 6 - Skype; 7 - ICQ</xs:documentation>
+                                </xs:annotation>
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:int">
+                                        <xs:minInclusive value="0"/>
+                                        <xs:maxInclusive value="7"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="SignDate" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>Не застосовується для елементів Addressee та Writer</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Address" minOccurs="0" type="location:CvlocationType">
+                        <xs:annotation>
+                            <xs:documentation>Складається з фрагментів поштової адреси (додаток 8)</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Organization" type="UkrOrganizationType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="UkrDocumentType">
+        <xs:sequence>
+            <xs:element name="RegNumber" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>0 - при передаванні посилальної інформації про документ (додаток 7)</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attribute name="regdate" type="xs:date" use="required">
+                        <xs:annotation>
+                            <xs:documentation>Дата реєстраці</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="regpoint" type="xs:string" use="optional">
+                        <xs:annotation>
+                            <xs:documentation>Посилання на номер пункту документ</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Confident">
+                <xs:annotation>
+                    <xs:documentation>Назва обмеження (грифа) згідно з прийнятими в організації регламентами</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attribute name="flag" use="required">
+                        <xs:annotation>
+                            <xs:documentation>Ознака обмеження доступу до документа: 0 - відкритий документ;1 - документ з обмеженим доступом</xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:int">
+                                <xs:minInclusive value="0"/>
+                                <xs:maxInclusive value="1"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="DocNumber" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Кратність = 1 для розпорядчих документів</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Organization" type="UkrOrganizationType">
+                            <xs:annotation>
+                                <xs:documentation>Орган, що відправив</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="RegNumber">
+                            <xs:annotation>
+                                <xs:documentation>Реєстраційний номер</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:attribute name="regdate" type="xs:date" use="required">
+                                    <xs:annotation>
+                                        <xs:documentation>Дата реєстраці</xs:documentation>
+                                    </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="regpoint" type="xs:string" use="optional">
+                                    <xs:annotation>
+                                        <xs:documentation>Посилання на номер пункту документ</xs:documentation>
+                                    </xs:annotation>
+                                </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="kind" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation>Назва виду документа (наказ, розпорядження тощо)</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Reghistory" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>Історія реєстрації документа в різних організаціях. Вкладені елементи містять всі реєстраційні номери, що надавалися документу, за винятком останнього, занесеного в елемент RegNumber елементу Document</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Organization" type="UkrOrganizationType"/>
+                        <xs:element name="RegNumber">
+                            <xs:annotation>
+                                <xs:documentation>Реєстраційний номер</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:string">
+                                        <xs:attribute name="regdate" type="xs:date" use="required">
+                                            <xs:annotation>
+                                                <xs:documentation>Дата реєстраці</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:attribute>
+                                        <xs:attribute name="regpoint" type="xs:string"
+                                            use="optional">
+                                            <xs:annotation>
+                                                <xs:documentation>Посилання на номер пункту документ</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:attribute>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="idnumber" type="xs:string" use="optional">
+                        <xs:annotation>
+                            <xs:documentation>Унікальний службовий ідентифікаційний номер документа - унікальний ідентифікатор документа в СЕД відповідної організації (див. вкладені елементи)</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Author" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>Опис осіб, що підписали документ</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Organization" type="UkrOrganizationType">
+                            <xs:annotation>
+                                <xs:documentation>Кратність = 1 для юридичних осіб</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="PersonalData" type="UkrPersonalDataType">
+                            <xs:annotation>
+                                <xs:documentation>Кратність = 1 для фізичних осіб</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="OutNumber" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>Вихідний реєстраційний номер документа</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="RegNumber">
+                                        <xs:annotation>
+                                            <xs:documentation>Реєстраційний номер</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                            <xs:simpleContent>
+                                                <xs:extension base="xs:string">
+                                                  <xs:attribute name="regdate" type="xs:date"
+                                                  use="required">
+                                                  <xs:annotation>
+                                                  <xs:documentation>Дата реєстраці</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:attribute>
+                                                  <xs:attribute name="regpoint" type="xs:string"
+                                                  use="optional">
+                                                  <xs:annotation>
+                                                  <xs:documentation>Посилання на номер пункту документ</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:attribute>
+                                                </xs:extension>
+                                            </xs:simpleContent>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Validator" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>Особа, яка затвердила або узгодила цей документ</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Organization" type="UkrOrganizationType">
+                            <xs:annotation>
+                                <xs:documentation>Кратність = 1 для юридичних осіб</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="PersonalData" type="UkrPersonalDataType">
+                            <xs:annotation>
+                                <xs:documentation>Кратність = 1 для фізичних осіб</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="DocNumber" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>Кратність = 1 при узгодженні (затверджені) іншим документом</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Organization" type="UkrOrganizationType"/>
+                                    <xs:element name="RegNumber">
+                                        <xs:annotation>
+                                            <xs:documentation>Реєстраційний номер</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                            <xs:simpleContent>
+                                                <xs:extension base="xs:string">
+                                                  <xs:attribute name="regdate" type="xs:date"
+                                                  use="required">
+                                                  <xs:annotation>
+                                                  <xs:documentation>Дата реєстраці</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:attribute>
+                                                  <xs:attribute name="regpoint" type="xs:string"
+                                                  use="optional">
+                                                  <xs:annotation>
+                                                  <xs:documentation>Посилання на номер пункту документ</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:attribute>
+                                                </xs:extension>
+                                            </xs:simpleContent>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="attestation" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation>Гриф узгодження або затвердження, наприклад: Узгоджено; Затверджено; Узгоджено із зауваженнями; Відхилено</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Addressee" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>Відомості про адресата</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Organization" type="UkrOrganizationType">
+                            <xs:annotation>
+                                <xs:documentation>Кратність = 1 для юридичних осіб</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="PersonalData" type="UkrPersonalDataType">
+                            <xs:annotation>
+                                <xs:documentation>Кратність = 1 для фізичних осіб</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="Referred" minOccurs="0" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Реєстраційний номер і дата документа або завдання, на який дається посилання</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="RegNumber">
+                                        <xs:annotation>
+                                            <xs:documentation>Реєстраційний номер</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                            <xs:simpleContent>
+                                                <xs:extension base="xs:string">
+                                                  <xs:attribute name="regdate" type="xs:date"
+                                                  use="required">
+                                                  <xs:annotation>
+                                                  <xs:documentation>Дата реєстраці</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:attribute>
+                                                  <xs:attribute name="regpoint" type="xs:string"
+                                                  use="optional">
+                                                  <xs:annotation>
+                                                  <xs:documentation>Посилання на номер пункту документ</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:attribute>
+                                                </xs:extension>
+                                            </xs:simpleContent>
+                                        </xs:complexType>
+                                    </xs:element>
+                                    <xs:element name="TaskNumber" minOccurs="0">
+                                        <xs:annotation>
+                                            <xs:documentation>Номер завдання. Обов'язково заповнюється або елемент RegNumber, або TaskNumber</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:complexType>
+                                            <xs:attribute name="taskDate" type="xs:date"
+                                                use="required">
+                                                <xs:annotation>
+                                                  <xs:documentation>Дата завдання (доручення)</xs:documentation>
+                                                </xs:annotation>
+                                            </xs:attribute>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="idnumber" type="xs:string" use="optional">
+                                    <xs:annotation>
+                                        <xs:documentation>Унікальний службовий ідентифікаційний номер документа або завдання, залежно від значення атрибута retype</xs:documentation>
+                                    </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="retype" use="required">
+                                    <xs:annotation>
+                                        <xs:documentation>Визначає вид посилання: 0 - посилання на документ; 1 - посилання на завдання</xs:documentation>
+                                    </xs:annotation>
+                                    <xs:simpleType>
+                                        <xs:restriction base="xs:int">
+                                            <xs:minInclusive value="0"/>
+                                            <xs:maxInclusive value="1"/>
+                                        </xs:restriction>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="type" use="required">
+                        <xs:annotation>
+                            <xs:documentation>0 - адресат (одержувач) електронного документа, організація, юридична особа;
+1 - адресат електронного документа, фізична особа;
+2 - адресат (одержувач) електронного документа, посадова особа</xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:int">
+                                <xs:minInclusive value="0"/>
+                                <xs:maxInclusive value="2"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Writer">
+                <xs:annotation>
+                    <xs:documentation>Виконавець (складач) документа</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Organization" type="UkrOrganizationType">
+                            <xs:annotation>
+                                <xs:documentation>Кратність = 1 для юридичних осіб</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="PersonalData" type="UkrPersonalDataType">
+                            <xs:annotation>
+                                <xs:documentation>Кратність = 1 для фізичних осіб</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="type" use="required">
+                        <xs:annotation>
+                            <xs:documentation>0 - підписант електронного документа, посадова особа, електронна печатка;
+1 - підписант електронного документа, фізична особа</xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:int">
+                                <xs:minInclusive value="0"/>
+                                <xs:maxInclusive value="1"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="AppenedDocuments">
+                <xs:complexType>
+                    <xs:attribute name="file_name" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="idnumber" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>Унікальний службовий ідентифікаційнийномер документа в системі, що передає</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="type" use="required">
+            <xs:annotation>
+                <xs:documentation>Тип документа: 0 - вихідний; 1 - вхідний; 2 - звернення громадян</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:int">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="2"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="kind" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>Назва виду документа (наказ, розпорядження, тощо)</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="pages" type="xs:int" use="optional">
+            <xs:annotation>
+                <xs:documentation>Кількість аркушів документа</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="title" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>Заголовок до тексту</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="annotation" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>Короткий зміст документа</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="collection" use="optional">
+            <xs:annotation>
+                <xs:documentation>Колективність: 0 - немає; 1 - так</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:int">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="1"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="file_name" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="UkrSystemType">
+        <xs:attribute name="id"/>
+        <xs:attribute name="name"/>
+        <xs:attribute name="details"/>
+    </xs:complexType>
+    <xs:element name="Document" type="UkrDocumentType"/>
+    <xs:element name="E-message">
+        <xs:annotation>
+            <xs:documentation>Повідомлення</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Header">
+                    <xs:annotation>
+                        <xs:documentation>Заголовок. Містить службову інформацію, необхідну для правильної передачі та інтерпретації всього Повідомлення в цілому</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="FromOrganization" type="UkrOrganizationType">
+                                <xs:annotation>
+                                    <xs:documentation>Організація-відправник</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="ToOrganization" type="UkrOrganizationType">
+                                <xs:annotation>
+                                    <xs:documentation>Організація-одержувач</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="FromSystem" type="UkrSystemType"/>
+                            <xs:element name="ToSystem" type="UkrSystemType"/>
+                        </xs:sequence>
+                        <xs:attribute name="standart" type="xs:string" use="required">
+                            <xs:annotation>
+                                <xs:documentation>Вид специфікацій, згідно з якими створено це Повідомлення. Допустиме значення: специфікації (MOREQ)</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="version" type="xs:string" use="required">
+                            <xs:annotation>
+                                <xs:documentation>Версія специфікацій. Допустиме значення: "1.0"</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="charset" type="xs:string" use="required">
+                            <xs:annotation>
+                                <xs:documentation>Кодування тексту повідомлення відповідно до встановлених IANA-кодуваннь (Win 1251, UTF 8 та інші)</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="time" type="xs:dateTime" use="required">
+                            <xs:annotation>
+                                <xs:documentation>Дата і час формування Повідомлення. Дата і час в системі UTC</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="msg_type" use="required">
+                            <xs:annotation>
+                                <xs:documentation>Вид Повідомлення Впливає на перелік допустимих елементів (зон) в Повідомленні: 0 - Повідомлення; 1 - Основний документ; 2 - Доповнення до основного документа; 3 - Документ-відповідь; 4 - Доповнення до документа-відповіді</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                                <xs:restriction base="xs:int">
+                                    <xs:minInclusive value="0"/>
+                                    <xs:maxInclusive value="4"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:attribute>
+                        <xs:attribute name="msg_id" type="xs:string" use="required">
+                            <xs:annotation>
+                                <xs:documentation>Унікальний службовий ідентифікаційний номер Повідомлення</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="msg_acknow" use="optional">
+                            <xs:annotation>
+                                <xs:documentation>Необхідність відправлення Сповіщення. 0 - Ні; 1 - Тільки при помилках; 2 - Завжди. За умовчанням (відсутність атрибута) - 0</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                                <xs:restriction base="xs:int">
+                                    <xs:minInclusive value="0"/>
+                                    <xs:maxInclusive value="2"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="Document" minOccurs="0" maxOccurs="unbounded"
+                    type="UkrDocumentType">
+                    <xs:annotation>
+                        <xs:documentation>Документ (основна зона). Містить інформацію про передаваний документ - як його структуровану частину, так і, можливо, власне документ в електронному, неструктурованому вигляді (у вигляді файлу, набору файлів). Кратність = 0 для Повідомлень виду Сповіщення</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="TaskLis" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Завдання. Містить інформацію про видані завдання на виконання і обробку документа (у вигляді резолюцій, доручень, супровідних листів, нагадувань і так далі) - як їхструктуровану частину (в обсязі стандартизованого набору реквізитів РКК), так і,можливо, в електронному, неструктурованому вигляді (у вигляді файлу, набору файлів). Кратність - 0 для документабез завдань</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Task" maxOccurs="unbounded">
+                                <xs:annotation>
+                                    <xs:documentation>Завдання по документу</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="TaskNumber">
+                                            <xs:annotation>
+                                                <xs:documentation>Номер завдання</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="Confiden">
+                                            <xs:annotation>
+                                                <xs:documentation>Гриф обмеження доступу</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="Referred" maxOccurs="unbounded">
+                                            <xs:annotation>
+                                                <xs:documentation>Посилання на документи. Обов'язковим є посилання на документ, що надійшов у зоні "Документ" у цьому Повідомленні</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="RegNumber" minOccurs="0">
+                                                  <xs:annotation>
+                                                  <xs:documentation>Обов'язково заповнюється або елемент RegNumber, або TaskNumber</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                  <xs:element name="TaskNumber" minOccurs="0">
+                                                  <xs:annotation>
+                                                  <xs:documentation>Обов'язково заповнюється або елемент RegNumber, або TaskNumber</xs:documentation>
+                                                  </xs:annotation>
+                                                  </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="Author" maxOccurs="unbounded"
+                                            type="UkrPersonalDataType">
+                                            <xs:annotation>
+                                                <xs:documentation>Автор завдання</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="Executor" maxOccurs="unbounded">
+                                            <xs:annotation>
+                                                <xs:documentation>Виконавці</xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="Person "
+                                                  type="UkrPersonalDataType"/>
+                                                </xs:sequence>
+                                                <xs:attribute name="responsible" use="optional">
+                                                  <xs:annotation>
+                                                  <xs:documentation>Мітка відповідального виконавця: 0 - співвиконавець, 1 - відповідальний виконавець. Значення 1 може бути тільки у одного із списку виконавців</xs:documentation>
+                                                  </xs:annotation>
+                                                  <xs:simpleType>
+                                                  <xs:restriction base="xs:int">
+                                                  <xs:minInclusive value="0"/>
+                                                  <xs:maxInclusive value="1"/>
+                                                  </xs:restriction>
+                                                  </xs:simpleType>
+                                                </xs:attribute>
+                                                <xs:attribute name="task_specified" type="xs:string"
+                                                  use="optional">
+                                                  <xs:annotation>
+                                                  <xs:documentation>Уточнення завдання для цього виконавц. Наприклад, номери пунктів завдання</xs:documentation>
+                                                  </xs:annotation>
+                                                </xs:attribute>
+                                                <xs:attribute name="deadline" type="xs:date"
+                                                  use="required">
+                                                  <xs:annotation>
+                                                  <xs:documentation>Термін виконання завдання для конкретного виконавця</xs:documentation>
+                                                  </xs:annotation>
+                                                </xs:attribute>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute name="idnumber" type="xs:string" use="required">
+                                        <xs:annotation>
+                                            <xs:documentation>Унікальний службовий ідентифікаційнийномер завдання всистемі, що передає</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:attribute>
+                                    <xs:attribute name="task_reg" use="required">
+                                        <xs:annotation>
+                                            <xs:documentation>Відмітка про реєстрацію завдання: 0 - завдання не зареєстроване в організації, що передає; 1 - завдання зареєстроване в організації, що передає</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:int">
+                                                <xs:minInclusive value="0"/>
+                                                <xs:maxInclusive value="1"/>
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:attribute>
+                                    <xs:attribute name="task_copy" use="required">
+                                        <xs:annotation>
+                                            <xs:documentation>Відмітка про передачу копії завдання: 0 - завдання з організації, що передає; 1 - копія завдання, направленого в організацію, що передає</xs:documentation>
+                                        </xs:annotation>
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:int">
+                                                <xs:minInclusive value="0"/>
+                                                <xs:maxInclusive value="1"/>
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:attribute>
+                                    <xs:attribute name="kind" type="xs:string" use="optional">
+                                        <xs:annotation>
+                                            <xs:documentation>Вид завдання. Назва завдання: доручення, супровідний лист і так далі</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:attribute>
+                                    <xs:attribute name="task_text" type="xs:string" use="required">
+                                        <xs:annotation>
+                                            <xs:documentation>Текст завдання</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:attribute>
+                                    <xs:attribute name="deadline" type="xs:date" use="required">
+                                        <xs:annotation>
+                                            <xs:documentation>Термін виконання</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:attribute>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="Acknowledgement" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Сповіщення (підтвердження прийому). Містить інформацію - відповідь про доставку Повідомлення, про помилки приймання та інтерпретації Повідомлення, про реєстрацію отриманого документа тощо. Ця зона в Повідомленні може передаватися тільки із Заголовком Повідомлення та з Розширенням. Кратність = 1 для Повідомлень виду: "Сповіщення", для решти Повідомлень кратність = 0</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="RegNumber" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>Реєстраційний номер документа, наданий в системі-одержувачі. Кратність = 1 для Повідомлень про успішну реєстрацію документа (вид Повідомлення -"Сповіщенняпро реєстрацію документа")</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="AckResult" maxOccurs="unbounded">
+                                <xs:annotation>
+                                    <xs:documentation>Змістовна частина "Сповіщення"</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:attribute name="errorcode" type="xs:int" use="required">
+                                        <xs:annotation>
+                                            <xs:documentation>Код помилки відповідно до додатка 31</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:attribute>
+                                    <xs:attribute name="errortext" type="xs:string" use="required">
+                                        <xs:annotation>
+                                            <xs:documentation>Рядок, що містить описи помилки. Зміст залежить від значень коду помилки errorcode</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:attribute>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="msg_id" type="xs:string" use="required">
+                            <xs:annotation>
+                                <xs:documentation>Унікальний службовий ідентифікаційнийномер Повідомлення, щонадійшло</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="ack_type" use="required">
+                            <xs:annotation>
+                                <xs:documentation>Вид Повідомлення: 1 - Сповіщення про доставку Повідомлення; 2 - Сповіщення про прийняття Повідомлення; 3 - Сповіщення про реєстрацію документа в системі-одержувачі</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                                <xs:restriction base="xs:int">
+                                    <xs:minInclusive value="1"/>
+                                    <xs:maxInclusive value="3"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:attribute>
+                        <xs:attribute name="document_id" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
